@@ -8,6 +8,7 @@ Standalone visualization UI for Refract. Not part of the monorepo — no `@refra
 bun run dev      # vite dev server
 bun run build    # tsc + vite build
 bun run preview  # vite preview
+bun run test     # tsc --noEmit (typecheck)
 ```
 
 ## Conventions
