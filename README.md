@@ -1,5 +1,9 @@
 # Refract UI
 
+<p align="center">
+  <img src="docs/assets/refract-ui-demo.gif" alt="refract-ui demo animation" width="720">
+</p>
+
 Standalone visualization for the [Refract](https://github.com/refract-org/refract) observation engine.
 
 Web app (vanilla TS + Vite) that loads JSONL event data compatible with `@refract-org/evidence-graph` and renders timelines, diffs, citation graphs, and event-type breakdowns.
