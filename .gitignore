@@ -3,3 +3,11 @@ dist
 .DS_Store
 *.local
 opencode.json
+
+# Tooling
+.cmux/
+.opencode/
+.sisyphus/
+.codex/
+.agent/
+.wrangler/
