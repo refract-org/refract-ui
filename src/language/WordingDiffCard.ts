@@ -1,106 +1,110 @@
 import type { EvidenceEvent } from "../types.js";
 
 interface WordingChange {
-  revisionId: number;
-  timestamp: string;
-  section: string;
-  eventType: string;
-  before: string;
-  after: string;
-  summary: string;
+	revisionId: number;
+	timestamp: string;
+	section: string;
+	eventType: string;
+	before: string;
+	after: string;
+	summary: string;
 }
 
 export class WordingDiffCard {
-  private container: HTMLElement;
-  private events: EvidenceEvent[] = [];
+	private container: HTMLElement;
+	private events: EvidenceEvent[] = [];
 
-  constructor(container: HTMLElement) {
-    this.container = container;
-  }
+	constructor(container: HTMLElement) {
+		this.container = container;
+	}
 
-  setData(events: EvidenceEvent[]): void {
-    this.events = events;
-    this.render();
-  }
+	setData(events: EvidenceEvent[]): void {
+		this.events = events;
+		this.render();
+	}
 
-  render(): void {
-    this.container.innerHTML = "";
+	render(): void {
+		this.container.innerHTML = "";
 
-    const title = document.createElement("div");
-    title.className = "panel-title";
-    title.textContent = "Wording Changes";
-    this.container.appendChild(title);
+		const title = document.createElement("div");
+		title.className = "panel-title";
+		title.textContent = "Wording Changes";
+		this.container.appendChild(title);
 
-    const changes = this.computeChanges();
+		const changes = this.computeChanges();
 
-    if (changes.length === 0) {
-      const empty = document.createElement("div");
-      empty.style.cssText = "color:var(--text-dim);font-size:0.85rem;padding:1rem 0;";
-      empty.textContent = "No wording-related events found.";
-      this.container.appendChild(empty);
-      return;
-    }
+		if (changes.length === 0) {
+			const empty = document.createElement("div");
+			empty.style.cssText =
+				"color:var(--text-dim);font-size:0.85rem;padding:1rem 0;";
+			empty.textContent = "No wording-related events found.";
+			this.container.appendChild(empty);
+			return;
+		}
 
-    const grid = document.createElement("div");
-    grid.className = "card-grid";
+		const grid = document.createElement("div");
+		grid.className = "card-grid";
 
-    for (const ch of changes) {
-      const card = document.createElement("div");
-      card.className = "card";
+		for (const ch of changes) {
+			const card = document.createElement("div");
+			card.className = "card";
 
-      const label = document.createElement("div");
-      label.className = "card-label";
-      const ts = new Date(ch.timestamp);
-      label.textContent = `r${ch.revisionId} · ${ts.toLocaleDateString()} · ${ch.section}`;
-      card.appendChild(label);
+			const label = document.createElement("div");
+			label.className = "card-label";
+			const ts = new Date(ch.timestamp);
+			label.textContent = `r${ch.revisionId} · ${ts.toLocaleDateString()} · ${ch.section}`;
+			card.appendChild(label);
 
-      const body = document.createElement("div");
-      body.className = "card-body";
-      body.textContent = ch.summary;
-      card.appendChild(body);
+			const body = document.createElement("div");
+			body.className = "card-body";
+			body.textContent = ch.summary;
+			card.appendChild(body);
 
-      if (ch.before !== ch.after) {
-        const beforeEl = document.createElement("div");
-        beforeEl.className = "card-diff";
-        beforeEl.style.cssText += ";border-left:3px solid var(--red);margin-bottom:2px;";
-        beforeEl.textContent = `− ${ch.before}`;
-        card.appendChild(beforeEl);
+			if (ch.before !== ch.after) {
+				const beforeEl = document.createElement("div");
+				beforeEl.className = "card-diff";
+				beforeEl.style.cssText +=
+					";border-left:3px solid var(--red);margin-bottom:2px;";
+				beforeEl.textContent = `− ${ch.before}`;
+				card.appendChild(beforeEl);
 
-        const afterEl = document.createElement("div");
-        afterEl.className = "card-diff";
-        afterEl.style.cssText += ";border-left:3px solid var(--green);";
-        afterEl.textContent = `+ ${ch.after}`;
-        card.appendChild(afterEl);
-      }
+				const afterEl = document.createElement("div");
+				afterEl.className = "card-diff";
+				afterEl.style.cssText += ";border-left:3px solid var(--green);";
+				afterEl.textContent = `+ ${ch.after}`;
+				card.appendChild(afterEl);
+			}
 
-      grid.appendChild(card);
-    }
+			grid.appendChild(card);
+		}
 
-    this.container.appendChild(grid);
-  }
+		this.container.appendChild(grid);
+	}
 
-  private computeChanges(): WordingChange[] {
-    const wordingTypes = new Set([
-      "claim_reworded",
-      "claim_softened",
-      "claim_strengthened",
-      "claim_first_seen",
-      "claim_removed",
-    ]);
+	private computeChanges(): WordingChange[] {
+		const wordingTypes = new Set([
+			"claim_reworded",
+			"claim_softened",
+			"claim_strengthened",
+			"claim_first_seen",
+			"claim_removed",
+		]);
 
-    const wordingEvents = this.events.filter((e) => wordingTypes.has(e.eventType));
+		const wordingEvents = this.events.filter((e) =>
+			wordingTypes.has(e.eventType),
+		);
 
-    return wordingEvents.map((e) => ({
-      revisionId: e.toRevisionId,
-      timestamp: e.timestamp,
-      section: e.section,
-      eventType: e.eventType,
-      before: e.before,
-      after: e.after,
-      summary:
-        e.deterministicFacts.length > 0
-          ? e.deterministicFacts[0].fact
-          : e.eventType.replace(/_/g, " "),
-    }));
-  }
+		return wordingEvents.map((e) => ({
+			revisionId: e.toRevisionId,
+			timestamp: e.timestamp,
+			section: e.section,
+			eventType: e.eventType,
+			before: e.before,
+			after: e.after,
+			summary:
+				e.deterministicFacts.length > 0
+					? e.deterministicFacts[0].fact
+					: e.eventType.replace(/_/g, " "),
+		}));
+	}
 }
