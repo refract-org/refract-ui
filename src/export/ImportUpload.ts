@@ -1,19 +1,19 @@
 import type { EvidenceEvent } from "../types.js";
 
 const VALID_EVENT_TYPES = new Set([
-	"claim_first_seen",
-	"claim_removed",
-	"claim_softened",
-	"claim_strengthened",
-	"claim_reworded",
-	"claim_moved",
-	"claim_reintroduced",
+	"sentence_first_seen",
+	"sentence_removed",
+	"sentence_modified",
+	"sentence_reintroduced",
 	"citation_added",
 	"citation_removed",
 	"citation_replaced",
 	"template_added",
 	"template_removed",
+	"template_parameter_changed",
 	"revert_detected",
+	"edit_cluster_detected",
+	"talk_activity_spike",
 	"section_reorganized",
 	"lead_promotion",
 	"lead_demotion",
@@ -27,7 +27,6 @@ const VALID_EVENT_TYPES = new Set([
 	"talk_thread_opened",
 	"talk_thread_archived",
 	"talk_reply_added",
-	"template_parameter_changed",
 ]);
 
 const VALID_LAYERS = new Set([
@@ -130,7 +129,13 @@ export class ImportUpload {
 			}
 
 			if (errors.length > 0) {
-				console.warn("Import errors:", errors);
+				const errorList = document.createElement("div");
+				errorList.style.cssText = `margin-top:0.5rem;padding:0.75rem;background:var(--red-soft);border-radius:var(--radius-sm);font-size:0.72rem;color:var(--red);max-height:8rem;overflow-y:auto;white-space:pre-wrap;line-height:1.5;`;
+				errorList.textContent = errors.slice(0, 10).join("\n");
+				if (errors.length > 10) {
+					errorList.textContent += `\n\u2026 and ${errors.length - 10} more errors`;
+				}
+				status.appendChild(errorList);
 			}
 		} catch (err) {
 			status.textContent = `Error reading file: ${err}`;
@@ -164,7 +169,7 @@ export class ImportUpload {
 
 		if (
 			typeof e.timestamp !== "string" ||
-			isNaN(new Date(e.timestamp).getTime())
+			Number.isNaN(new Date(e.timestamp).getTime())
 		) {
 			return { valid: false, error: "Invalid or missing timestamp" };
 		}

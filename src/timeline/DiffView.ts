@@ -1,28 +1,81 @@
 import type { DiffLine, EvidenceEvent } from "../types.js";
 
-function computeDiff(before: string, after: string): DiffLine[] {
-	const beforeLines = before.split("\n");
-	const afterLines = after.split("\n");
-	const lines: DiffLine[] = [];
-	const maxLen = Math.max(beforeLines.length, afterLines.length);
+function computeWordDiff(before: string, after: string): DiffLine[] {
+	const beforeWords = before.split(/(\s+)/);
+	const afterWords = after.split(/(\s+)/);
+	const result: DiffLine[] = [];
 
-	for (let i = 0; i < maxLen; i++) {
-		const b = beforeLines[i] ?? "";
-		const a = afterLines[i] ?? "";
+	let bi = 0;
+	let ai = 0;
 
-		if (i >= beforeLines.length) {
-			lines.push({ type: "added", content: a, lineNumber: i + 1 });
-		} else if (i >= afterLines.length) {
-			lines.push({ type: "removed", content: b, lineNumber: i + 1 });
-		} else if (b === a) {
-			lines.push({ type: "unchanged", content: b, lineNumber: i + 1 });
+	while (bi < beforeWords.length || ai < afterWords.length) {
+		if (bi >= beforeWords.length) {
+			result.push({
+				type: "added",
+				content: afterWords.slice(ai).join(""),
+				lineNumber: 0,
+			});
+			break;
+		}
+		if (ai >= afterWords.length) {
+			result.push({
+				type: "removed",
+				content: beforeWords.slice(bi).join(""),
+				lineNumber: 0,
+			});
+			break;
+		}
+
+		if (beforeWords[bi] === afterWords[ai]) {
+			let chunk = "";
+			while (
+				bi < beforeWords.length &&
+				ai < afterWords.length &&
+				beforeWords[bi] === afterWords[ai]
+			) {
+				chunk += beforeWords[bi];
+				bi++;
+				ai++;
+			}
+			if (chunk)
+				result.push({ type: "unchanged", content: chunk, lineNumber: 0 });
 		} else {
-			lines.push({ type: "removed", content: b, lineNumber: i + 1 });
-			lines.push({ type: "added", content: a, lineNumber: i + 1 });
+			const bStart = bi;
+			const aStart = ai;
+
+			while (
+				bi < beforeWords.length &&
+				(ai >= afterWords.length || beforeWords[bi] !== afterWords[ai])
+			) {
+				bi++;
+			}
+
+			if (
+				ai < afterWords.length &&
+				bi < beforeWords.length &&
+				beforeWords[bi] === afterWords[ai]
+			) {
+				const removed = beforeWords.slice(bStart, bi).join("");
+				const added = afterWords.slice(aStart, ai).join("");
+				if (removed)
+					result.push({ type: "removed", content: removed, lineNumber: 0 });
+				if (added)
+					result.push({ type: "added", content: added, lineNumber: 0 });
+			} else {
+				const removed = beforeWords.slice(bStart).join("");
+				const added = afterWords.slice(aStart).join("");
+				if (removed)
+					result.push({ type: "removed", content: removed, lineNumber: 0 });
+				if (added)
+					result.push({ type: "added", content: added, lineNumber: 0 });
+				break;
+			}
 		}
 	}
 
-	return lines;
+	return result.length > 0
+		? result
+		: [{ type: "unchanged", content: after || before, lineNumber: 0 }];
 }
 
 export class DiffView {
@@ -78,51 +131,35 @@ export class DiffView {
 		sectionInfo.textContent = event.section || "(no section)";
 		this.container.appendChild(sectionInfo);
 
-		const diffLines = computeDiff(event.before, event.after);
+		const diffLines = computeWordDiff(event.before, event.after);
 
 		const diffContainer = document.createElement("div");
 		diffContainer.className = "diff-container";
 
-		const beforePane = document.createElement("div");
-		beforePane.className = "diff-pane";
-		const beforeHeader = document.createElement("div");
-		beforeHeader.className = "diff-pane-header";
-		beforeHeader.textContent = "Before";
-		beforePane.appendChild(beforeHeader);
-		const beforeContent = document.createElement("div");
-		beforeContent.className = "diff-lines";
-		beforePane.appendChild(beforeContent);
-
-		const afterPane = document.createElement("div");
-		afterPane.className = "diff-pane";
-		const afterHeader = document.createElement("div");
-		afterHeader.className = "diff-pane-header";
-		afterHeader.textContent = "After";
-		afterPane.appendChild(afterHeader);
-		const afterContent = document.createElement("div");
-		afterContent.className = "diff-lines";
-		afterPane.appendChild(afterContent);
-
 		for (const line of diffLines) {
+			const el = document.createElement("span");
+			el.style.cssText =
+				"font-family:var(--font-mono);font-size:0.85rem;line-height:1.7;";
 			if (line.type === "added") {
-				afterContent.appendChild(createDiffLine(line, "diff-line-added"));
+				el.className = "diff-word-added";
+				el.style.cssText +=
+					"background:var(--green-soft);color:var(--green);padding:0.1rem 0;border-radius:2px;";
 			} else if (line.type === "removed") {
-				beforeContent.appendChild(createDiffLine(line, "diff-line-removed"));
-			} else {
-				beforeContent.appendChild(createDiffLine(line, "diff-line-unchanged"));
-				afterContent.appendChild(createDiffLine(line, "diff-line-unchanged"));
+				el.className = "diff-word-removed";
+				el.style.cssText +=
+					"background:var(--red-soft);color:var(--red);text-decoration:line-through;padding:0.1rem 0;border-radius:2px;";
 			}
+			el.textContent = line.content;
+			diffContainer.appendChild(el);
 		}
 
-		diffContainer.appendChild(beforePane);
-		diffContainer.appendChild(afterPane);
+		const labels = document.createElement("div");
+		labels.style.cssText =
+			"display:flex;gap:1rem;margin-top:0.75rem;font-size:0.75rem;color:var(--text-dim);";
+		labels.innerHTML =
+			'<span style="color:var(--red)">⬤ Removed</span><span style="color:var(--green)">⬤ Added</span>';
+		diffContainer.appendChild(labels);
+
 		this.container.appendChild(diffContainer);
 	}
-}
-
-function createDiffLine(line: DiffLine, className: string): HTMLElement {
-	const el = document.createElement("div");
-	el.className = className;
-	el.textContent = line.content || " ";
-	return el;
 }

@@ -112,6 +112,7 @@ function applyFilters(activeTypes: Set<EventType>): void {
 	const filtered = allEvents.filter((e) => activeTypes.has(e.eventType));
 	timelineView.applyFilter(filtered);
 	exportCtrl.setData(filtered);
+	updateAll(filtered);
 }
 
 loadSampleData();

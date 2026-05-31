@@ -18,6 +18,24 @@
 			"recommended": true
 		}
 	},
+	"overrides": [
+		{
+			"includes": ["src/main.ts"],
+			"linter": {
+				"rules": {
+					"style": { "noNonNullAssertion": "off" }
+				}
+			}
+		},
+		{
+			"includes": ["scripts/generate-scenes.ts"],
+			"linter": {
+				"rules": {
+					"suspicious": { "noExplicitAny": "off" }
+				}
+			}
+		}
+	],
 	"javascript": {
 		"formatter": {
 			"quoteStyle": "double"

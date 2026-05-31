@@ -122,8 +122,8 @@ export class CertaintyTimeline {
 		return modelEvents.map((e) => ({
 			revisionId: e.toRevisionId,
 			timestamp: e.timestamp,
-			confidence: e.modelInterpretation!.confidence,
-			label: e.modelInterpretation!.semanticChange,
+			confidence: e.modelInterpretation?.confidence ?? 0,
+			label: e.modelInterpretation?.semanticChange ?? "",
 		}));
 	}
 }

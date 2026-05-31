@@ -92,8 +92,19 @@ body::before {
 
 .subtitle {
 	color: var(--text-dim);
+	font-size: 0.8rem;
+}
+
+.section-head {
+	margin: 1.5rem 0 0.75rem;
+	font-family: var(--font-heading);
 	font-size: 0.85rem;
-	font-weight: 400;
+	font-weight: 600;
+	color: var(--text-dim);
+	text-transform: uppercase;
+	letter-spacing: 0.12em;
+	border-bottom: 1px solid var(--border);
+	padding-bottom: 0.4rem;
 }
 #app-header .subtitle {
 	margin-left: auto;

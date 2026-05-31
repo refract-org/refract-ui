@@ -36,11 +36,25 @@ export class TimelineExport {
 		this.container.appendChild(jsonBtn);
 		this.container.appendChild(jsonlBtn);
 		this.container.appendChild(csvBtn);
+
+		const exportStatus = document.createElement("span");
+		exportStatus.id = "export-status";
+		exportStatus.style.cssText =
+			"font-size:0.72rem;color:var(--text-dim);margin-left:0.5rem;display:none;";
+		this.container.appendChild(exportStatus);
 	}
 
 	private export(format: ExportFormat): void {
 		if (this.events.length === 0) {
-			alert("No data to export. Upload a JSONL file first.");
+			const status = document.getElementById("export-status");
+			if (status) {
+				status.textContent = "No data to export.";
+				status.style.color = "var(--red)";
+				status.style.display = "inline";
+				setTimeout(() => {
+					status.style.display = "none";
+				}, 3000);
+			}
 			return;
 		}
 

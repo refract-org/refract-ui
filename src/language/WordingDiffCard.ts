@@ -83,11 +83,10 @@ export class WordingDiffCard {
 
 	private computeChanges(): WordingChange[] {
 		const wordingTypes = new Set([
-			"claim_reworded",
-			"claim_softened",
-			"claim_strengthened",
-			"claim_first_seen",
-			"claim_removed",
+			"sentence_modified",
+			"sentence_first_seen",
+			"sentence_removed",
+			"sentence_reintroduced",
 		]);
 
 		const wordingEvents = this.events.filter((e) =>
