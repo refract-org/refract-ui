@@ -26,7 +26,7 @@ export class RevertClusterDisplay {
 
 		const title = document.createElement("div");
 		title.className = "panel-title";
-		title.textContent = "Revert Clusters";
+		title.textContent = "Revert clusters";
 		this.container.appendChild(title);
 
 		const clusters = this.computeClusters();

@@ -26,7 +26,7 @@ export class SourceChangeTable {
 
 		const title = document.createElement("div");
 		title.className = "panel-title";
-		title.textContent = "Source Changes";
+		title.textContent = "Source changes";
 		this.container.appendChild(title);
 
 		const changes = this.computeChanges();

@@ -28,7 +28,7 @@ export class WordingDiffCard {
 
 		const title = document.createElement("div");
 		title.className = "panel-title";
-		title.textContent = "Wording Changes";
+		title.textContent = "Wording changes";
 		this.container.appendChild(title);
 
 		const changes = this.computeChanges();

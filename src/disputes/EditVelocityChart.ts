@@ -25,7 +25,7 @@ export class EditVelocityChart {
 
 		const title = document.createElement("div");
 		title.className = "panel-title";
-		title.textContent = "Edit Velocity";
+		title.textContent = "Events per day";
 		this.container.appendChild(title);
 
 		const buckets = this.computeBuckets();

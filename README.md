@@ -1,12 +1,8 @@
 # Refract UI
 
-<p align="center">
-  <img src="docs/assets/refract-ui-demo.gif" alt="refract-ui demo animation" width="720">
-</p>
-
 Standalone visualization for the [Refract](https://github.com/refract-org/refract) observation engine.
 
-Load any JSONL file of Refract observation events and explore what changed — timelines, diffs, citation graphs, disputes, and event-type breakdowns. No backend needed.
+Load a JSONL file of Refract events to see them as a timeline with word-level diffs, citation and revert charts, talk page activity, and a list of the fields the events carry. Everything runs in the browser; there is no backend.
 
 ## Quick start
 
@@ -27,17 +23,17 @@ Then drag `bitcoin-events.jsonl` onto the Refract UI upload zone.
 
 ## What you'll see
 
-**Timeline** — Every event in chronological order. Click any event to see the word-level diff of what changed. Filter by event type to narrow the view.
+**Timeline** — Every event, in the order the file lists them. Click an event to see the word-level diff of what changed. Filter by event type to narrow the view.
 
-**Citations** — Bar chart showing citation additions, removals, and replacements per revision, plus a sortable table of every citation change.
+**Citations** — Bar chart of citation additions, removals, and replacements per revision, plus a table of every citation change.
 
-**Certainty** — Confidence scores over time for model-interpreted events.
+**Model confidence** — The confidence score of each event on the `model_interpretation` layer.
 
-**Disputes** — Revert clusters, edit velocity per day, and talk page activity.
+**Disputes** — Revert clusters, events per day (with reverts), and talk page activity.
 
-**Language Changes** — Card grid of wording events (claims reworded, strengthened, softened, removed).
+**Wording changes** — One card per sentence event (first seen, modified, removed, reintroduced), with the before and after text.
 
-**Schema** — Every JSON key in the loaded data, with types and presence percentage.
+**Event schema** — Every top-level field in the loaded events, with its types and the share of events that have it.
 
 **Export** — Download filtered data as JSON, JSONL, or CSV.
 
@@ -46,7 +42,7 @@ Then drag `bitcoin-events.jsonl` onto the Refract UI upload zone.
 - Vite + vanilla TypeScript
 - No framework dependencies
 - DOM-based rendering with CSS custom properties
-- Works fully offline after first load
+- Loads nothing from other origins; an uploaded file is read in the browser and never sent anywhere
 
 ---
 

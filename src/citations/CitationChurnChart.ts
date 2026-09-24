@@ -26,7 +26,7 @@ export class CitationChurnChart {
 
 		const title = document.createElement("div");
 		title.className = "panel-title";
-		title.textContent = "Citation Churn";
+		title.textContent = "Citation churn";
 		this.container.appendChild(title);
 
 		const churnData = this.computeChurn();
