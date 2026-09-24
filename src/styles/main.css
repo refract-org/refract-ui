@@ -29,9 +29,10 @@
 	--cyan: #22d3ee;
 	--radius: 10px;
 	--radius-sm: 6px;
-	--font: "Manrope", system-ui, sans-serif;
-	--font-heading: "Syne", system-ui, sans-serif;
-	--mono: "Recursive", monospace;
+	--font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+	--font-heading: var(--font);
+	--mono:
+		ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
 }
 
 html {
@@ -40,7 +41,6 @@ html {
 
 body {
 	font-family: var(--font);
-	font-weight: 350;
 	background: var(--bg-deep);
 	color: var(--text);
 	line-height: 1.5;
@@ -48,29 +48,10 @@ body {
 	min-height: 100vh;
 }
 
-/* ── Ambient Background ── */
-body::before {
-	content: "";
-	position: fixed;
-	top: 0;
-	right: 0;
-	width: 50%;
-	height: 50%;
-	background: radial-gradient(
-		ellipse at top right,
-		rgba(124, 138, 255, 0.05),
-		transparent 60%
-	);
-	pointer-events: none;
-	z-index: 0;
-}
-
 #app {
 	max-width: 1440px;
 	margin: 0 auto;
 	padding: 1.25rem 1.5rem;
-	position: relative;
-	z-index: 1;
 }
 
 /* ── Header ── */
@@ -85,7 +66,7 @@ body::before {
 
 #app-header h1 {
 	font-size: 1.4rem;
-	font-weight: 650;
+	font-weight: 600;
 	color: var(--accent);
 	letter-spacing: -0.02em;
 }
@@ -128,44 +109,15 @@ body::before {
 /* ── Panels ── */
 .panel {
 	background: var(--bg-panel);
-	backdrop-filter: blur(12px);
-	-webkit-backdrop-filter: blur(12px);
 	border: 1px solid var(--border);
 	border-radius: var(--radius);
 	padding: 1rem 1.25rem;
 	overflow: auto;
-	transition:
-		border-color 0.2s ease,
-		box-shadow 0.2s ease;
-	animation: panelFadeIn 0.35s ease-out both;
+	transition: border-color 0.2s ease;
 }
 
 .panel:hover {
 	border-color: var(--border-strong);
-}
-
-.panel:nth-child(1) {
-	animation-delay: 0ms;
-}
-.panel:nth-child(2) {
-	animation-delay: 60ms;
-}
-.panel:nth-child(3) {
-	animation-delay: 120ms;
-}
-.panel:nth-child(4) {
-	animation-delay: 180ms;
-}
-
-@keyframes panelFadeIn {
-	from {
-		opacity: 0;
-		transform: translateY(6px);
-	}
-	to {
-		opacity: 1;
-		transform: translateY(0);
-	}
 }
 
 .panel-title {
@@ -357,7 +309,6 @@ select {
 	color: var(--text-dim);
 	margin-top: 0.15rem;
 	font-family: var(--mono);
-	font-variation-settings: "MONO" 1;
 }
 
 /* ── Diff Viewer ── */
@@ -384,7 +335,6 @@ select {
 
 .diff-lines {
 	font-family: var(--mono);
-	font-variation-settings: "MONO" 1;
 	font-size: 0.78rem;
 	line-height: 1.6;
 	padding: 0.5rem 0.6rem;
@@ -476,14 +426,11 @@ select {
 	background: var(--accent);
 	transform: translate(-50%, -50%);
 	cursor: pointer;
-	transition:
-		transform 0.2s ease,
-		box-shadow 0.2s ease;
+	transition: transform 0.2s ease;
 }
 
 .certainty-dot:hover {
 	transform: translate(-50%, -50%) scale(1.5);
-	box-shadow: 0 0 12px rgba(124, 138, 255, 0.4);
 }
 
 .certainty-dot.high {
@@ -518,7 +465,6 @@ select {
 	padding: 0.5rem 0.6rem;
 	border-bottom: 1px solid var(--border);
 	font-family: var(--mono);
-	font-variation-settings: "MONO" 1;
 	font-size: 0.76rem;
 }
 
@@ -559,7 +505,6 @@ select {
 
 .card-diff {
 	font-family: var(--mono);
-	font-variation-settings: "MONO" 1;
 	font-size: 0.78rem;
 	margin-top: 0.4rem;
 	padding: 0.4rem;
@@ -628,7 +573,6 @@ select {
 /* ── Schema Viewer ── */
 .schema-viewer {
 	font-family: var(--mono);
-	font-variation-settings: "MONO" 1;
 	font-size: 0.76rem;
 	line-height: 1.6;
 	white-space: pre-wrap;
