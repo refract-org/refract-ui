@@ -25,7 +25,7 @@ export class CertaintyTimeline {
 
 		const title = document.createElement("div");
 		title.className = "panel-title";
-		title.textContent = "Certainty Over Time";
+		title.textContent = "Model confidence";
 		this.container.appendChild(title);
 
 		const points = this.computePoints();

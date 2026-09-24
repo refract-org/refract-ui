@@ -17,7 +17,7 @@ export class SchemaViewer {
 
 		const title = document.createElement("div");
 		title.className = "panel-title";
-		title.textContent = "Event Schema Inspector";
+		title.textContent = "Event schema";
 		this.container.appendChild(title);
 
 		if (this.events.length === 0) {

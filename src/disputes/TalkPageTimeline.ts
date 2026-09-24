@@ -25,7 +25,7 @@ export class TalkPageTimeline {
 
 		const title = document.createElement("div");
 		title.className = "panel-title";
-		title.textContent = "Talk Page Activity";
+		title.textContent = "Talk page activity";
 		this.container.appendChild(title);
 
 		const activities = this.computeActivities();

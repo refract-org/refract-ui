@@ -101,7 +101,7 @@ export class DiffView {
 		this.container.innerHTML = "";
 		const title = document.createElement("div");
 		title.className = "panel-title";
-		title.textContent = "Diff Viewer";
+		title.textContent = "Diff";
 		this.container.appendChild(title);
 
 		const hint = document.createElement("div");

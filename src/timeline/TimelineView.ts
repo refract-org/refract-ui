@@ -38,7 +38,7 @@ export class TimelineView {
 
 		const title = document.createElement("div");
 		title.className = "panel-title";
-		title.textContent = "Revision Timeline";
+		title.textContent = "Revision timeline";
 		this.container.appendChild(title);
 
 		const count = document.createElement("div");
@@ -99,7 +99,8 @@ export class TimelineView {
 }
 
 function formatEventType(type: EventType): string {
-	return type.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+	const words = type.replace(/_/g, " ");
+	return words.charAt(0).toUpperCase() + words.slice(1);
 }
 
 function summarizeEvent(event: EvidenceEvent): string {
