@@ -128,7 +128,7 @@ export class DiffView {
 
 		const sectionInfo = document.createElement("div");
 		sectionInfo.style.cssText =
-			"font-size:0.78rem;color:var(--text-dim);margin-bottom:0.5rem;font-family:var(--font-mono);";
+			"font-size:0.78rem;color:var(--text-dim);margin-bottom:0.5rem;font-family:var(--mono);";
 		sectionInfo.textContent = event.section || "(no section)";
 		this.container.appendChild(sectionInfo);
 

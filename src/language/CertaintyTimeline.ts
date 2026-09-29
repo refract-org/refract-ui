@@ -100,7 +100,7 @@ export class CertaintyTimeline {
 		const info = document.createElement("div");
 		info.id = "certainty-info";
 		info.style.cssText =
-			"font-size:0.78rem;color:var(--text-dim);margin-top:0.25rem;font-family:var(--font-mono);";
+			"font-size:0.78rem;color:var(--text-dim);margin-top:0.25rem;font-family:var(--mono);";
 		info.textContent = "Click a dot for details.";
 		this.container.appendChild(info);
 
