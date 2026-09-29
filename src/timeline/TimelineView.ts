@@ -2,15 +2,18 @@ import type { EventType, EvidenceEvent } from "../types.js";
 
 export interface TimelineViewOptions {
 	container: HTMLElement;
-	onSelectEvent?: (event: EvidenceEvent) => void;
+	/** Called with the selected event, or null when no event is listed. */
+	onSelectEvent?: (event: EvidenceEvent | null) => void;
 }
 
 export class TimelineView {
 	private container: HTMLElement;
 	private events: EvidenceEvent[] = [];
 	private filtered: EvidenceEvent[] = [];
-	private selectedId: string | null = null;
-	private onSelectEvent?: (event: EvidenceEvent) => void;
+	// Held by reference: eventId is optional in the schema, and filtering keeps
+	// the same objects.
+	private selected: EvidenceEvent | null = null;
+	private onSelectEvent?: (event: EvidenceEvent | null) => void;
 
 	constructor(opts: TimelineViewOptions) {
 		this.container = opts.container;
@@ -20,17 +23,35 @@ export class TimelineView {
 	setData(events: EvidenceEvent[]): void {
 		this.events = events;
 		this.filtered = [...events];
+		this.syncSelection();
 		this.render();
 	}
 
 	applyFilter(filtered: EvidenceEvent[]): void {
 		this.filtered = filtered;
+		this.syncSelection();
 		this.render();
 	}
 
 	selectEvent(eventId: string | null): void {
-		this.selectedId = eventId;
+		this.selected =
+			this.filtered.find(
+				(e) => e.eventId !== undefined && e.eventId === eventId,
+			) ?? null;
 		this.render();
+		this.onSelectEvent?.(this.selected);
+	}
+
+	/**
+	 * Keep the selected event while it is still listed; otherwise select the
+	 * first listed one, so the diff panel shows a change instead of opening
+	 * empty. The first listed event is the one at the top of this panel, next
+	 * to the diff it fills.
+	 */
+	private syncSelection(): void {
+		if (this.selected && this.filtered.includes(this.selected)) return;
+		this.selected = this.filtered[0] ?? null;
+		this.onSelectEvent?.(this.selected);
 	}
 
 	render(): void {
@@ -62,7 +83,7 @@ export class TimelineView {
 		for (const event of this.filtered) {
 			const item = document.createElement("div");
 			item.className = `timeline-item event-${event.eventType}`;
-			if (event.eventId && event.eventId === this.selectedId) {
+			if (event === this.selected) {
 				item.classList.add("selected");
 			}
 
@@ -86,7 +107,7 @@ export class TimelineView {
 			item.appendChild(meta);
 
 			item.addEventListener("click", () => {
-				this.selectedId = event.eventId ?? null;
+				this.selected = event;
 				this.render();
 				this.onSelectEvent?.(event);
 			});

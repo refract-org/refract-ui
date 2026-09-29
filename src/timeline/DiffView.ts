@@ -104,10 +104,11 @@ export class DiffView {
 		title.textContent = "Diff";
 		this.container.appendChild(title);
 
+		// The timeline selects its first listed event, so this shows only when
+		// no event is loaded or none matches the filter.
 		const hint = document.createElement("div");
-		hint.style.cssText =
-			"color:var(--text-dim);font-size:0.85rem;padding:1rem 0;";
-		hint.textContent = "Click an event in the timeline to see the diff.";
+		hint.style.cssText = "color:var(--text-dim);font-size:0.85rem;";
+		hint.textContent = "No event selected.";
 		this.container.appendChild(hint);
 	}
 
@@ -138,28 +139,21 @@ export class DiffView {
 
 		for (const line of diffLines) {
 			const el = document.createElement("span");
-			el.style.cssText =
-				"font-family:var(--font-mono);font-size:0.85rem;line-height:1.7;";
 			if (line.type === "added") {
 				el.className = "diff-word-added";
-				el.style.cssText +=
-					"background:var(--green-soft);color:var(--green);padding:0.1rem 0;border-radius:2px;";
 			} else if (line.type === "removed") {
 				el.className = "diff-word-removed";
-				el.style.cssText +=
-					"background:var(--red-soft);color:var(--red);text-decoration:line-through;padding:0.1rem 0;border-radius:2px;";
 			}
 			el.textContent = line.content;
 			diffContainer.appendChild(el);
 		}
 
+		this.container.appendChild(diffContainer);
+
 		const labels = document.createElement("div");
-		labels.style.cssText =
-			"display:flex;gap:1rem;margin-top:0.75rem;font-size:0.75rem;color:var(--text-dim);";
+		labels.className = "diff-legend";
 		labels.innerHTML =
 			'<span style="color:var(--red)">⬤ Removed</span><span style="color:var(--green)">⬤ Added</span>';
-		diffContainer.appendChild(labels);
-
-		this.container.appendChild(diffContainer);
+		this.container.appendChild(labels);
 	}
 }

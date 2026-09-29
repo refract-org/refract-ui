@@ -41,12 +41,13 @@ export class SourceChangeTable {
 		}
 
 		const table = document.createElement("table");
-		table.className = "data-table";
+		table.className = "data-table source-table";
 
+		// Detail is last so it takes the width the short columns leave. The
+		// revision id is on each row's tooltip rather than in a column of its own.
 		const thead = document.createElement("thead");
 		thead.innerHTML = `
       <tr>
-        <th>Rev</th>
         <th>Date</th>
         <th>Type</th>
         <th>Section</th>
@@ -58,14 +59,19 @@ export class SourceChangeTable {
 		const tbody = document.createElement("tbody");
 		for (const ch of changes) {
 			const tr = document.createElement("tr");
+			tr.title = `Revision r${ch.revisionId}`;
 			const ts = new Date(ch.timestamp);
-			tr.innerHTML = `
-        <td>r${ch.revisionId}</td>
-        <td>${ts.toLocaleDateString()}</td>
-        <td>${ch.changeType}</td>
-        <td>${ch.section}</td>
-        <td>${ch.detail}</td>
-      `;
+			// textContent, not innerHTML: section and detail come from the loaded file.
+			for (const text of [
+				ts.toLocaleDateString(),
+				ch.changeType,
+				ch.section,
+				ch.detail,
+			]) {
+				const td = document.createElement("td");
+				td.textContent = text;
+				tr.appendChild(td);
+			}
 			tbody.appendChild(tr);
 		}
 		table.appendChild(tbody);

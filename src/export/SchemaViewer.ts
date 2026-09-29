@@ -30,39 +30,47 @@ export class SchemaViewer {
 		}
 
 		const keys = this.collectKeys();
+		const infos = new Map(keys.map((key) => [key, this.getTypeInfo(key)]));
+		const allPresent = [...infos.values()].every((i) => i.inEveryEvent);
 
 		const schema = document.createElement("div");
 		schema.className = "schema-viewer";
 
+		// Presence is stated once for the fields every event carries; only the
+		// fields some events lack show their share.
 		const headerEl = document.createElement("div");
 		headerEl.style.cssText =
 			"color:var(--text-dim);margin-bottom:0.5rem;font-weight:600;";
-		headerEl.textContent = `Schema (${this.events.length} events, ${keys.length} fields)`;
+		headerEl.textContent = `${this.events.length} events, ${keys.length} fields. ${
+			allPresent
+				? "Every field is present in every event."
+				: "Fields without a percentage are present in every event."
+		}`;
 		schema.appendChild(headerEl);
 
-		for (const key of keys) {
-			const row = document.createElement("div");
-			row.style.cssText = "display:flex;gap:0.5rem;padding:0.15rem 0;";
+		// One grid for every field, so name, type and presence line up across
+		// rows whether or not a row has a presence cell.
+		const fields = document.createElement("div");
+		fields.className = "schema-fields";
 
+		for (const [key, typeInfo] of infos) {
 			const keyName = document.createElement("span");
-			keyName.style.cssText = "color:var(--accent);min-width:200px;";
+			keyName.className = "schema-key";
 			keyName.textContent = key;
-			row.appendChild(keyName);
+			fields.appendChild(keyName);
 
-			const typeInfo = this.getTypeInfo(key);
 			const typeName = document.createElement("span");
-			typeName.style.cssText = "color:var(--text-dim);min-width:100px;";
 			typeName.textContent = typeInfo.type;
-			row.appendChild(typeName);
+			fields.appendChild(typeName);
 
-			const presence = document.createElement("span");
-			presence.style.cssText = "color:var(--text-dim);";
-			presence.textContent = `${typeInfo.presence}% present`;
-			row.appendChild(presence);
-
-			schema.appendChild(row);
+			if (!typeInfo.inEveryEvent) {
+				const presence = document.createElement("span");
+				presence.textContent = `${typeInfo.presence}% present`;
+				fields.appendChild(presence);
+			}
 		}
 
+		schema.appendChild(fields);
 		this.container.appendChild(schema);
 	}
 
@@ -78,7 +86,11 @@ export class SchemaViewer {
 		return keys;
 	}
 
-	private getTypeInfo(key: string): { type: string; presence: number } {
+	private getTypeInfo(key: string): {
+		type: string;
+		presence: number;
+		inEveryEvent: boolean;
+	} {
 		let present = 0;
 		const types = new Set<string>();
 
@@ -93,7 +105,11 @@ export class SchemaViewer {
 		}
 
 		const typeStr = Array.from(types).join(" | ");
-		const pct = Math.round((present / this.events.length) * 100);
-		return { type: typeStr, presence: pct };
+		const inEveryEvent = present === this.events.length;
+		// A field missing from some events never rounds up to 100%.
+		const pct = inEveryEvent
+			? 100
+			: Math.min(99, Math.round((present / this.events.length) * 100));
+		return { type: typeStr, presence: pct, inEveryEvent };
 	}
 }
