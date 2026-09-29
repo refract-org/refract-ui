@@ -70,6 +70,7 @@ new ImportUpload(document.getElementById("import-area")!, (events) => {
 	exportCtrl.setData(events);
 	const allTypes = collectEventTypes(events);
 	filter.setTypes(allTypes);
+	timelineView.setData(events);
 	updateAll(events);
 });
 
@@ -83,6 +84,7 @@ async function loadSampleData(): Promise<void> {
 		exportCtrl.setData(events);
 		const allTypes = collectEventTypes(events);
 		filter.setTypes(allTypes);
+		timelineView.setData(events);
 		updateAll(events);
 	} catch (err) {
 		console.warn("Could not load sample data:", err);
@@ -97,8 +99,10 @@ function collectEventTypes(events: EvidenceEvent[]): EventType[] {
 	return Array.from(set).sort();
 }
 
+// Every panel but the timeline. The timeline takes the full set once, on load,
+// and a filter through applyFilter, so its count reads "3 of 12". Setting its
+// data from here made the filtered set its total, and the count read "3 of 3".
 function updateAll(events: EvidenceEvent[]): void {
-	timelineView.setData(events);
 	citationChart.setData(events);
 	certaintyTimeline.setData(events);
 	schemaViewer.setData(events as unknown as Record<string, unknown>[]);

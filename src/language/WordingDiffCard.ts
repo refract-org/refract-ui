@@ -60,19 +60,25 @@ export class WordingDiffCard {
 			body.textContent = ch.summary;
 			card.appendChild(body);
 
+			// A sentence seen for the first time has no "before" and a removed
+			// one has no "after"; each printed an empty − or + line.
 			if (ch.before !== ch.after) {
-				const beforeEl = document.createElement("div");
-				beforeEl.className = "card-diff";
-				beforeEl.style.cssText +=
-					";border-left:3px solid var(--red);margin-bottom:2px;";
-				beforeEl.textContent = `− ${ch.before}`;
-				card.appendChild(beforeEl);
+				if (ch.before.trim()) {
+					const beforeEl = document.createElement("div");
+					beforeEl.className = "card-diff";
+					beforeEl.style.cssText +=
+						";border-left:3px solid var(--red);margin-bottom:2px;";
+					beforeEl.textContent = `− ${ch.before}`;
+					card.appendChild(beforeEl);
+				}
 
-				const afterEl = document.createElement("div");
-				afterEl.className = "card-diff";
-				afterEl.style.cssText += ";border-left:3px solid var(--green);";
-				afterEl.textContent = `+ ${ch.after}`;
-				card.appendChild(afterEl);
+				if (ch.after.trim()) {
+					const afterEl = document.createElement("div");
+					afterEl.className = "card-diff";
+					afterEl.style.cssText += ";border-left:3px solid var(--green);";
+					afterEl.textContent = `+ ${ch.after}`;
+					card.appendChild(afterEl);
+				}
 			}
 
 			grid.appendChild(card);

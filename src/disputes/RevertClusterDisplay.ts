@@ -66,7 +66,7 @@ export class RevertClusterDisplay {
 			if (cluster.section) {
 				const section = document.createElement("div");
 				section.style.cssText =
-					"font-size:0.78rem;color:var(--text-dim);margin-bottom:0.3rem;font-family:var(--font-mono);";
+					"font-size:0.78rem;color:var(--text-dim);margin-bottom:0.3rem;font-family:var(--mono);";
 				section.textContent = cluster.section;
 				card.appendChild(section);
 			}
