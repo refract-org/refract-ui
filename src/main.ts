@@ -19,7 +19,8 @@ let allEvents: EvidenceEvent[] = [];
 const timelineView = new TimelineView({
 	container: document.getElementById("panel-timeline")!,
 	onSelectEvent: (event) => {
-		diffView.showDiff(event);
+		if (event) diffView.showDiff(event);
+		else diffView.clear();
 	},
 });
 

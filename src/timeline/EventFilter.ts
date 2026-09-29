@@ -57,27 +57,33 @@ export class EventFilter {
 	render(): void {
 		this.container.innerHTML = "";
 
+		// All and None are actions, not states: the chips already show which
+		// types are on, so neither button is highlighted. Each is disabled when
+		// it would change nothing.
 		const selectAll = document.createElement("button");
+		selectAll.type = "button";
 		selectAll.textContent = "All";
-		selectAll.className =
-			this.activeTypes.size === this.allTypes.length ? "active" : "";
+		selectAll.disabled = this.activeTypes.size === this.allTypes.length;
 		selectAll.addEventListener("click", () => this.selectAll());
 		this.container.appendChild(selectAll);
 
 		const clearBtn = document.createElement("button");
+		clearBtn.type = "button";
 		clearBtn.textContent = "None";
-		clearBtn.className = this.activeTypes.size === 0 ? "active" : "";
+		clearBtn.disabled = this.activeTypes.size === 0;
 		clearBtn.addEventListener("click", () => this.clearAll());
 		this.container.appendChild(clearBtn);
 
 		for (const type of this.allTypes) {
-			const tag = document.createElement("span");
+			const tag = document.createElement("button");
+			tag.type = "button";
 			tag.className = "filter-tag";
-			if (this.activeTypes.has(type)) {
+			const active = this.activeTypes.has(type);
+			if (active) {
 				tag.classList.add("active");
 			}
+			tag.setAttribute("aria-pressed", String(active));
 			tag.textContent = formatEventTypeShort(type);
-			tag.title = formatEventTypeShort(type);
 			tag.addEventListener("click", () => this.toggleType(type));
 			this.container.appendChild(tag);
 		}

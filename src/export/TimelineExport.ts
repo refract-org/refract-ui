@@ -2,6 +2,12 @@ import type { EvidenceEvent } from "../types.js";
 
 export type ExportFormat = "json" | "jsonl" | "csv";
 
+const FORMATS: [ExportFormat, string][] = [
+	["json", "JSON"],
+	["jsonl", "JSONL"],
+	["csv", "CSV"],
+];
+
 export class TimelineExport {
 	private container: HTMLElement;
 	private events: EvidenceEvent[] = [];
@@ -18,24 +24,26 @@ export class TimelineExport {
 	private render(): void {
 		this.container.innerHTML = "";
 
-		const jsonBtn = document.createElement("button");
-		jsonBtn.className = "export-btn";
-		jsonBtn.textContent = "Export JSON";
-		jsonBtn.addEventListener("click", () => this.export("json"));
+		// One export action with a format choice, instead of a button per format.
+		const format = document.createElement("select");
+		format.setAttribute("aria-label", "Export format");
+		for (const [value, label] of FORMATS) {
+			const option = document.createElement("option");
+			option.value = value;
+			option.textContent = label;
+			format.appendChild(option);
+		}
 
-		const jsonlBtn = document.createElement("button");
-		jsonlBtn.className = "export-btn";
-		jsonlBtn.textContent = "Export JSONL";
-		jsonlBtn.addEventListener("click", () => this.export("jsonl"));
+		const exportBtn = document.createElement("button");
+		exportBtn.type = "button";
+		exportBtn.className = "export-btn";
+		exportBtn.textContent = "Export";
+		exportBtn.addEventListener("click", () =>
+			this.export(format.value as ExportFormat),
+		);
 
-		const csvBtn = document.createElement("button");
-		csvBtn.className = "export-btn";
-		csvBtn.textContent = "Export CSV";
-		csvBtn.addEventListener("click", () => this.export("csv"));
-
-		this.container.appendChild(jsonBtn);
-		this.container.appendChild(jsonlBtn);
-		this.container.appendChild(csvBtn);
+		this.container.appendChild(format);
+		this.container.appendChild(exportBtn);
 
 		const exportStatus = document.createElement("span");
 		exportStatus.id = "export-status";
