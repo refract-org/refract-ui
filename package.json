@@ -3,7 +3,7 @@
 	"version": "0.1.0",
 	"private": true,
 	"type": "module",
-	"description": "Standalone visualization UI for Refract \u2014 load JSONL, render timelines, diffs, citations",
+	"description": "Standalone visualization UI for Refract — load JSONL, render timelines, diffs, citations",
 	"license": "AGPL-3.0",
 	"repository": {
 		"type": "git",
@@ -26,6 +26,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.5.8",
+		"happy-dom": "^20.14.5",
 		"husky": "^9.1.7",
 		"lint-staged": "^17.0.5",
 		"typescript": "^5.7.0",
