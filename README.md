@@ -1,5 +1,12 @@
 # Refract UI
 
+> **This repository has moved.** The viewer is now
+> [`apps/ui`](https://github.com/refract-org/refract/tree/main/apps/ui) in
+> [refract-org/refract](https://github.com/refract-org/refract), imported with
+> its full history. It now takes its event types from the engine's schema, so it
+> can no longer drift from it. Open issues and pull requests there; this
+> repository is kept read-only for its history.
+
 Standalone visualization for the [Refract](https://github.com/refract-org/refract) observation engine.
 
 Load a JSONL file of Refract events to see them as a timeline with word-level diffs, citation and revert charts, talk page activity, and a list of the fields the events carry. Everything runs in the browser; there is no backend.
